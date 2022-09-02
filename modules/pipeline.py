@@ -55,7 +55,6 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
 
 def create_features(df: pd.DataFrame) -> pd.DataFrame:
     def short_model(x):
-        import pandas as pd
         # return x if pd.isna(x) else x.lower().split(' ')[0]
         try:
             return x.lower().split('')[0]
