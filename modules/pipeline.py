@@ -55,7 +55,12 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
 
 def create_features(df: pd.DataFrame) -> pd.DataFrame:
     def short_model(x):
-        return x if pd.isna(x) else x.lower().split(' ')[0]
+        import pandas as pd
+        # return x if pd.isna(x) else x.lower().split(' ')[0]
+        try:
+            return x.lower().split('')[0]
+        except Exception:
+            return x
 
     df = df.copy()
     df.loc[:, 'short_model'] = df['model'].apply(short_model)
@@ -117,7 +122,7 @@ def pipeline() -> None:
             best_pipe = pipe
 
     logging.info(f'best model: {type(best_pipe.named_steps["classifier"]).__name__}, accuracy: {best_score:.4f}')
-
+    print(f'best model: {type(best_pipe.named_steps["classifier"]).__name__}, accuracy: {best_score:.4f}')
     best_pipe.fit(X, y)
     model_filename = f'{path}/data/models/cars_pipe_{datetime.now().strftime("%Y%m%d%H%M")}.pkl'
 
@@ -125,6 +130,7 @@ def pipeline() -> None:
         dill.dump(best_pipe, file)
 
     logging.info(f'Model is saved as {model_filename}')
+    print(f'Model is saved as {model_filename}')
 
 
 if __name__ == '__main__':

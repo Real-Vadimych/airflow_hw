@@ -4,7 +4,8 @@ import sys
 
 from airflow.models import DAG
 from airflow.operators.python import PythonOperator
-from modules.pipeline import pipeline
+import pandas as pd
+
 
 path = os.path.expanduser('~/airflow_hw')
 # Добавим путь к коду проекта в переменную окружения, чтобы он был доступен python-процессу
@@ -12,8 +13,8 @@ os.environ['PROJECT_PATH'] = path
 # Добавим путь к коду проекта в $PATH, чтобы импортировать функции
 sys.path.insert(0, path)
 
-
-# <YOUR_IMPORTS>
+from modules.pipeline import pipeline
+from modules.predict import predict
 
 args = {
     'owner': 'airflow',
@@ -32,5 +33,10 @@ with DAG(
         task_id='pipeline',
         python_callable=pipeline,
     )
-    # <YOUR_CODE>
+    predict = PythonOperator(
+        task_id='predict',
+        python_callable=predict,
+    )
+
+    pipeline >> predict
 
